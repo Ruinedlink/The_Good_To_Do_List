@@ -13,6 +13,8 @@ typedef ContextMenuBuilder = Widget Function(
 );
 
 Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   List<ToDoList> userLists = await importFromFile().toList();
   for (ToDoList i in userLists) {
     debugPrint(i.name);
@@ -146,6 +148,7 @@ class _HomePageState extends State<HomePage> {
 
   void onAddList(String name) {
     ToDoList newList = ToDoList(name);
+    newList.saveToFile;
     setState(() {
       userLists.add(newList);
     });
@@ -165,6 +168,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       task.setParentId(selectedList.id!);
       selectedList.addChildTask(task);
+      selectedList.saveToFile();
     });
   }
 

@@ -2,6 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:path_provider/path_provider.dart';
+
+Future<Directory> _listsDirectory() async {
+  final base = await getApplicationSupportDirectory();
+  final dir = Directory('${base.path}${Platform.pathSeparator}lists');
+  await dir.create(recursive: true);
+  return dir;
+}
+
 String _generateId() =>
     '${DateTime.now().microsecondsSinceEpoch}-${Random().nextInt(99999)}';
 
@@ -51,8 +60,10 @@ class ToDoList with TaskContainer {
     : tasks = tasks ?? [],
       id = id ?? _generateId();
 
-  String get fileName =>
-      'lib/lists/${name.replaceAll(' ', '_')}-TheGoodToDoList.json';
+  Future<File> _file() async {
+    final dir = await _listsDirectory();
+    return File('${dir.path}${Platform.pathSeparator}$id.json');
+  }
 
   void addTask(Task task) {
     tasks.add(task);
@@ -81,11 +92,9 @@ class ToDoList with TaskContainer {
   }
 
   Future<void> saveToFile() async {
-    File file = File(fileName);
-    await file.parent.create(recursive: true);
-    String jsonString = const JsonEncoder.withIndent('  ').convert(toJson());
+    final file = await _file();
+    final jsonString = const JsonEncoder.withIndent('  ').convert(toJson());
     await file.writeAsString(jsonString);
-    // print('Saved to ${file.path}');
   }
 
   String getName() {
@@ -184,13 +193,17 @@ class Task with TaskContainer {
 }
 
 Stream<ToDoList> importFromFile() async* {
-  Directory dir = Directory('lib/lists');
-  await for (FileSystemEntity entity in dir.list()) {
-    if (entity is File) {
-      entity.path.split('/').last;
-      String jsonString = await entity.readAsString();
-      var decoded = jsonDecode(jsonString);
-      yield ToDoList.fromJson(decoded);
+  final dir = await _listsDirectory();
+  print((await getApplicationSupportDirectory()).path);
+  await for (final entity in dir.list()) {
+    if (entity is File && entity.path.endsWith('.json')) {
+      try {
+        final decoded = jsonDecode(await entity.readAsString());
+        yield ToDoList.fromJson(decoded);
+      } catch (e) {
+        //ignore: avoid_print
+        print('Skipping unreadable file ${entity.path}: $e');
+      }
     }
   }
 }
