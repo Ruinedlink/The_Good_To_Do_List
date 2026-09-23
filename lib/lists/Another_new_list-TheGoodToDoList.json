@@ -1,0 +1,86 @@
+{
+  "name": "Another new list",
+  "id": "1790116258254061-29110",
+  "isNew": true,
+  "tasks": [
+    {
+      "text": "change ",
+      "id": "1790122103201913-10569",
+      "parentId": "1790116258254061-29110",
+      "deadline": "2026-09-30 00:00:00.000",
+      "status": false,
+      "priority": "Low",
+      "time": "2026-09-22 19:08",
+      "notes": "w6sertufytguyh",
+      "subTasks": []
+    },
+    {
+      "text": ";slad;fj",
+      "id": "1790122105718212-76528",
+      "parentId": "1790116258254061-29110",
+      "deadline": "2026-09-17 00:00:00.000",
+      "status": false,
+      "priority": "High",
+      "time": "2026-09-22 19:08",
+      "notes": "",
+      "subTasks": []
+    },
+    {
+      "text": "a",
+      "id": "1790122107439452-10899",
+      "parentId": "1790116258254061-29110",
+      "deadline": "2026-09-25 00:00:00.000",
+      "status": false,
+      "priority": null,
+      "time": "2026-09-22 19:08",
+      "notes": "",
+      "subTasks": [
+        {
+          "text": "sdal;kjf",
+          "id": "1790131983933999-53436",
+          "parentId": "1790122107439452-10899",
+          "deadline": null,
+          "status": false,
+          "priority": null,
+          "time": "",
+          "notes": "",
+          "subTasks": [
+            {
+              "text": "asdf",
+              "id": "1790131988231490-62388",
+              "parentId": "1790131983933999-53436",
+              "deadline": null,
+              "status": false,
+              "priority": null,
+              "time": "",
+              "notes": "",
+              "subTasks": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "few",
+      "id": "1790122109386875-70155",
+      "parentId": "1790116258254061-29110",
+      "deadline": null,
+      "status": false,
+      "priority": null,
+      "time": "2026-09-22 19:08",
+      "notes": "",
+      "subTasks": []
+    },
+    {
+      "text": "tasks",
+      "id": "1790122113731138-37061",
+      "parentId": "1790116258254061-29110",
+      "deadline": "2026-09-24 00:00:00.000",
+      "status": false,
+      "priority": null,
+      "time": "2026-09-22 19:08",
+      "notes": "",
+      "subTasks": []
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "name": "This is a new list",
+  "id": "1790177577305174-22113",
+  "isNew": true,
+  "tasks": [
+    {
+      "text": "add a few tasks",
+      "id": "1790177585083661-22194",
+      "parentId": "1790177577305174-22113",
+      "deadline": null,
+      "status": false,
+      "priority": null,
+      "time": "2026-09-23 10:33",
+      "notes": "",
+      "subTasks": []
+    },
+    {
+      "text": "anoter task",
+      "id": "1790177591980411-40615",
+      "parentId": "1790177577305174-22113",
+      "deadline": null,
+      "status": false,
+      "priority": null,
+      "time": "2026-09-23 10:33",
+      "notes": "",
+      "subTasks": []
+    },
+    {
+      "text": "and another",
+      "id": "1790177595851115-33886",
+      "parentId": "1790177577305174-22113",
+      "deadline": null,
+      "status": false,
+      "priority": null,
+      "time": "2026-09-23 10:33",
+      "notes": "",
+      "subTasks": [
+        {
+          "text": "even a subtask",
+          "id": "1790177598698704-71820",
+          "parentId": "1790177595851115-33886",
+          "deadline": null,
+          "status": false,
+          "priority": null,
+          "time": "",
+          "notes": "",
+          "subTasks": [
+            {
+              "text": "another",
+              "id": "1790177604924160-28359",
+              "parentId": "1790177598698704-71820",
+              "deadline": null,
+              "status": false,
+              "priority": null,
+              "time": "",
+              "notes": "",
+              "subTasks": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
