@@ -35,13 +35,14 @@ class _TaskSpecificsState extends State<TaskSpecifics> {
         widget.selectedList;
         widget.selectedTask;
 
-        if (widget.selectedTask!.notes != null) {
-          notesController.text = widget.selectedTask!.notes!;
+        if (widget.selectedTask != null) {
+          if (widget.selectedTask!.notes != null) {
+            notesController.text = widget.selectedTask!.notes!;
+          }
+          taskTextController.text = widget.selectedTask!.text;
         } else {
           notesController.text = '';
         }
-
-        taskTextController.text = widget.selectedTask!.text;
       });
     }
   }
@@ -125,41 +126,66 @@ class _TaskSpecificsState extends State<TaskSpecifics> {
                     ),
                     Divider(),
 
-                    Padding(
-                      padding: EdgeInsetsGeometry.all(10),
-                      child: SizedBox(
-                        height: 30,
-                        child: TextField(
-                          controller: taskTextController,
-                          maxLines: null,
-                          expands: true,
-                          decoration: InputDecoration(
-                            hintText: 'add task title...',
-                            border: InputBorder.none,
-                          ),
-                          textInputAction: TextInputAction.done,
-                          onSubmitted: _setText,
-                        ),
-                      ),
-                    ),
-
-                    Divider(),
                     Expanded(
-                      child: TextField(
-                        controller: notesController,
-                        maxLines: null,
-                        expands: true,
-                        textAlignVertical: TextAlignVertical.top,
-                        decoration: InputDecoration(
-                          hintText: 'Type Notes Here...',
-                          border: OutlineInputBorder(),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        onChanged: (text) => _setNotes(text),
+                        padding: EdgeInsets.all(5),
+                        child: Stack(
+                          children: [
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsetsGeometry.all(10),
+                                  child: SizedBox(
+                                    height: 32,
+                                    child: TextField(
+                                      controller: taskTextController,
+                                      maxLines: null,
+                                      expands: true,
+                                      decoration: InputDecoration(
+                                        hintText: 'add task title...',
+                                        border: InputBorder.none,
+                                      ),
+                                      textInputAction: TextInputAction.done,
+                                      onSubmitted: _setText,
+                                    ),
+                                  ),
+                                ),
+
+                                Divider(),
+                                Expanded(
+                                  child: TextField(
+                                    controller: notesController,
+                                    maxLines: null,
+                                    expands: true,
+                                    textAlignVertical: TextAlignVertical.top,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: 'Type Notes Here...',
+                                    ),
+                                    onChanged: (text) => _setNotes(text),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Align(
+                              alignment: AlignmentGeometry.bottomEnd,
+                              child: Text(
+                                'Time Created: ${widget.selectedTask?.time}',
+                                style: TextStyle(
+                                  color: Color.fromARGB(50, 225, 225, 255),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [Text('${widget.selectedTask?.time}')],
                     ),
                   ],
                 ),

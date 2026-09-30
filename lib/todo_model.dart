@@ -194,7 +194,7 @@ class Task with TaskContainer {
 
 Stream<ToDoList> importFromFile() async* {
   final dir = await _listsDirectory();
-  print((await getApplicationSupportDirectory()).path);
+  // print((await getApplicationSupportDirectory()).path);
   await for (final entity in dir.list()) {
     if (entity is File && entity.path.endsWith('.json')) {
       try {

@@ -36,7 +36,7 @@ class _DatePickerFlyoutState extends State<DatePickerFlyout> {
   DateTime _getFinalTime() {
     if (selectedDate == null) {
       DateTime now = DateTime.now();
-      updateSelectedDate(DateTime(now.year, now.month, now.day, 00, 00));
+      updateSelectedDate(DateTime(now.year, now.month, now.day, 24, 59));
     }
     if (selectedTime == null) {
       return DateTime(
@@ -58,9 +58,11 @@ class _DatePickerFlyoutState extends State<DatePickerFlyout> {
   }
 
   void updateSelectedDate(DateTime time) {
-    debugPrint(time.toString());
+    final newTime = DateTime(time.year, time.month, time.day, 23, 59);
+
+    debugPrint(newTime.toString());
     setState(() {
-      selectedDate = time;
+      selectedDate = newTime;
     });
   }
 
@@ -104,7 +106,12 @@ class _DatePickerFlyoutState extends State<DatePickerFlyout> {
         DateTime.sunday: 'Sun',
       };
       DateTime now = DateTime.now();
-      if (0 < widget.currentDeadline!.difference(now).inDays &&
+      now = DateTime(now.year, now.month, now.day);
+
+      if (widget.currentDeadline!.difference(now).inHours > 0 &&
+          widget.currentDeadline!.difference(now).inHours < 24) {
+        displayDate = 'Today';
+      } else if (0 < widget.currentDeadline!.difference(now).inDays &&
           widget.currentDeadline!.difference(now).inDays < 6) {
         displayDate = '${days[widget.currentDeadline!.weekday]}';
       } else {
@@ -165,7 +172,8 @@ class _DatePickerFlyoutState extends State<DatePickerFlyout> {
                       children: [
                         Expanded(
                           child: CalendarDatePicker(
-                            initialDate: DateTime.now(),
+                            initialDate:
+                                widget.currentDeadline ?? DateTime.now(),
                             firstDate: DateTime(2025),
                             lastDate: DateTime(2027),
                             onDateChanged: (time) => updateSelectedDate(time),

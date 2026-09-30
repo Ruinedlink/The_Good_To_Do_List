@@ -29,6 +29,7 @@ class _TaskLabel extends State<TaskLabel> {
   late Task? selectedTask;
   late bool _isSelected;
   late FocusNode _focusNode;
+  late TextStyle thisTextStyle;
 
   late bool _isEditing;
   late String displayDate;
@@ -63,12 +64,7 @@ class _TaskLabel extends State<TaskLabel> {
     super.didUpdateWidget(oldWidget);
     if (widget.selectedTask != oldWidget.selectedTask) {
       setState(() {
-        _isSelected = selectedTask == thisTask ? true : false;
-      });
-    }
-    if (widget.selectedTask != oldWidget.selectedTask) {
-      setState(() {
-        _expansionController.expand();
+        _isSelected = widget.selectedTask == thisTask ? true : false;
       });
     }
   }
@@ -148,6 +144,29 @@ class _TaskLabel extends State<TaskLabel> {
     }
   }
 
+  BorderSide _decideCheckBoxBorderColor(Task thisTask) {
+    switch (thisTask.priority) {
+      case null:
+        return BorderSide(color: Colors.white54, width: 2);
+      case 'Low':
+        return BorderSide(color: Colors.green, width: 2);
+      case 'Medium':
+        return BorderSide(color: Colors.orange, width: 2);
+      case 'High':
+        return BorderSide(color: Colors.red, width: 2);
+      default:
+        return BorderSide(color: Colors.white54, width: 2);
+    }
+  }
+
+  TextStyle _decideTextDecoration(bool isComplete) {
+    if (isComplete) {
+      return TextStyle(fontSize: 13, decoration: TextDecoration.lineThrough);
+    } else {
+      return TextStyle(fontSize: 13);
+    }
+  }
+
   Widget _buildShowDate(BuildContext context) {
     if (thisTask.deadline != null) {
       const Map<int, String> months = {
@@ -196,39 +215,69 @@ class _TaskLabel extends State<TaskLabel> {
         : SizedBox.shrink();
   }
 
+  void _showConfirmDeleteDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete the task \'${thisTask.text}\''),
+          content: Text(
+            'This will delete this task, its data, and it children, forever.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: Navigator.of(context).pop,
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => {
+                widget.onDelete(thisTask),
+                Navigator.of(context).pop(),
+              },
+              child: Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildContextMenu(BuildContext context, Offset offset) {
-    return AdaptiveTextSelectionToolbar.buttonItems(
-      anchors: TextSelectionToolbarAnchors(primaryAnchor: offset),
-      buttonItems: <ContextMenuButtonItem>[
-        ContextMenuButtonItem(
-          onPressed: () {
-            ContextMenuController.removeAny();
-            widget.onDelete(thisTask);
-          },
-          label: 'Delete',
-        ),
-        ContextMenuButtonItem(
-          onPressed: () {
-            ContextMenuController.removeAny();
-            // Edit This Task;
-          },
-          label: 'Edit Task',
-        ),
-        ContextMenuButtonItem(
-          onPressed: () {
-            ContextMenuController.removeAny();
-            _addSubtask();
-          },
-          label: 'Add Subtask',
-        ),
-        ContextMenuButtonItem(
-          onPressed: () {
-            ContextMenuController.removeAny();
-            _enableTextEditing();
-          },
-          label: 'Rename',
-        ),
-      ],
+    return TapRegion(
+      onTapOutside: (value) => ContextMenuController.removeAny(),
+      child: AdaptiveTextSelectionToolbar.buttonItems(
+        anchors: TextSelectionToolbarAnchors(primaryAnchor: offset),
+        buttonItems: <ContextMenuButtonItem>[
+          ContextMenuButtonItem(
+            onPressed: () {
+              _showConfirmDeleteDialog(context);
+              ContextMenuController.removeAny();
+            },
+            label: 'Delete',
+          ),
+          ContextMenuButtonItem(
+            onPressed: () {
+              ContextMenuController.removeAny();
+              // Edit This Task;
+            },
+            label: 'Edit Task',
+          ),
+          ContextMenuButtonItem(
+            onPressed: () {
+              ContextMenuController.removeAny();
+              _addSubtask();
+            },
+            label: 'Add Subtask',
+          ),
+          ContextMenuButtonItem(
+            onPressed: () {
+              ContextMenuController.removeAny();
+              _enableTextEditing();
+            },
+            label: 'Rename',
+          ),
+        ],
+      ),
     );
   }
 
@@ -253,12 +302,7 @@ class _TaskLabel extends State<TaskLabel> {
             minLeadingWidth: 0,
             minTileHeight: 0,
             minVerticalPadding: 8,
-            titleTextStyle: TextStyle(
-              fontSize: 13,
-              decoration: isComplete
-                  ? TextDecoration.lineThrough
-                  : TextDecoration.none,
-            ),
+            titleTextStyle: _decideTextDecoration(isComplete),
             selected: _isSelected,
             selectedTileColor: Color.fromARGB(50, 255, 255, 255),
             leading: Row(
@@ -284,6 +328,7 @@ class _TaskLabel extends State<TaskLabel> {
                 Checkbox(
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   value: isComplete,
+                  side: _decideCheckBoxBorderColor(thisTask),
                   onChanged: (bool? value) => {
                     _onToggle(),
                     widget.onTap(thisTask),

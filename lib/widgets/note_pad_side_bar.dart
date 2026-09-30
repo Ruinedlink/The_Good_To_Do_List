@@ -1,160 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:todo_model/todo_model.dart';
-import 'package:todo_model/note_pad_page.dart';
-import 'package:todo_model/widgets/user_lists.dart';
 
-class Sidebar extends StatefulWidget {
-  final ToDoLists toDoLists;
-  final ValueChanged<String> onAddList;
-  final ValueChanged<ToDoList> onChangeSelected;
+class NotePadSideBar extends StatefulWidget {
   final bool sidebarShown;
-  final VoidCallback onOpenSettingsPanel;
-  final ValueChanged<ViewSortMethod> onSelectedViewChanged;
-  const Sidebar({
+  final List<dynamic> userNotes;
+  final ValueChanged<String> onChangeSelected;
+  const new({
     super.key,
-    required this.toDoLists,
-    required this.onAddList,
-    required this.onChangeSelected,
     required this.sidebarShown,
-    required this.onOpenSettingsPanel,
-    required this.onSelectedViewChanged,
+    required this.userNotes,
+    required this.onChangeSelected,
   });
 
   @override
-  State<Sidebar> createState() => _SidebarState();
+  State<NotePadSideBar> createState() => _NotePadSideBarState();
 }
 
-class _SidebarState extends State<Sidebar> {
+class _NotePadSideBarState extends State<NotePadSideBar> {
   final ExpansibleController _expansionTileController = ExpansibleController();
-  late ToDoLists toDoLists;
-  final Color _selectedColor = Color.fromARGB(20, 255, 255, 255);
-  late bool sidebarShown;
-  // final Color _hoveredColor = Color.fromARGB(20, 255, 255, 255);
-  // final Color _restingColor = Color.fromARGB(0, 255, 255, 255);
-
-  @override
-  void initState() {
-    super.initState();
-    toDoLists = widget.toDoLists;
-    sidebarShown = widget.sidebarShown;
-  }
-
-  @override
-  void didUpdateWidget(Sidebar oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.sidebarShown != oldWidget.sidebarShown) {
-      setState(() {
-        sidebarShown = widget.sidebarShown;
-      });
-    }
-  }
-
-  void _showAddListDialog(
-    BuildContext context,
-    ValueChanged<String> onAddList,
-  ) {
-    final controller = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Add New List'),
-          content: TextField(
-            controller: controller,
-            autofocus: true,
-            decoration: const InputDecoration(
-              hintText: 'Enter list name...',
-              border: OutlineInputBorder(),
-            ),
-            onSubmitted: (value) {
-              if (value.trim().isNotEmpty) {
-                widget.onAddList(value.trim());
-                Navigator.of(context).pop();
-              }
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (controller.text.trim().isNotEmpty) {
-                  widget.onAddList(controller.text.trim());
-                  Navigator.of(context).pop();
-                }
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
-    return sidebarShown == false
+    return widget.sidebarShown == false
         ? SizedBox.shrink()
-        : SizedBox(
+        : Container(
+            padding: EdgeInsetsGeometry.all(10),
             width: 250,
-            child: Padding(
+            child: Container(
               padding: EdgeInsetsGeometry.all(10),
               child: Material(
-                clipBehavior: Clip.antiAlias,
+                borderRadius: BorderRadius.circular(10),
                 color: Color.fromARGB(25, 0, 0, 0),
-                borderRadius: BorderRadius.circular(20),
                 child: Column(
                   children: [
-                    ListTile(
-                      selectedColor: _selectedColor,
-                      onTap: () {
-                        widget.onSelectedViewChanged(ViewSortMethod.all);
-                        debugPrint('All tab was clicked');
-                      },
-                      title: Text('All'),
-                    ),
-                    ListTile(
-                      selectedColor: _selectedColor,
-                      onTap: () {
-                        widget.onSelectedViewChanged(ViewSortMethod.week);
-                        debugPrint('Week tab clicked');
-                      },
-                      title: Text('Week'),
-                    ),
-                    ListTile(
-                      selectedColor: _selectedColor,
-                      title: Text('Today'),
-                      onTap: () {
-                        widget.onSelectedViewChanged(ViewSortMethod.today);
-                        debugPrint('Today Tab Clicked');
-                      },
-                    ),
-                    ListTile(
-                      selectedColor: _selectedColor,
-                      title: Text('Inbox'),
-                      onTap: () {
-                        widget.onChangeSelected(toDoLists.inbox!);
-
-                        debugPrint('Inbox Tab Clicked');
-                      },
-                    ),
                     Expanded(
                       child: ExpansionTile(
                         controller: _expansionTileController,
                         initiallyExpanded: true,
                         controlAffinity: .leading,
-                        title: Text('Lists'),
+                        title: Text('Notes'),
                         leading: Icon(
                           _expansionTileController.isExpanded
                               ? Icons.arrow_drop_down
                               : Icons.arrow_right,
                         ),
                         trailing: IconButton(
-                          onPressed: () =>
-                              _showAddListDialog(context, widget.onAddList),
+                          onPressed: () => {
+                            // _showAddListDialog(context, widget.onAddList),
+                            debugPrint('Add Note Button Pressed'),
+                          },
                           icon: Icon(Icons.add),
                         ),
                         onExpansionChanged: (bool expanded) {
@@ -164,20 +57,18 @@ class _SidebarState extends State<Sidebar> {
                         },
                         children: [
                           SizedBox(
-                            height: 293,
+                            height: 300,
                             child: ListView.builder(
-                              itemCount: toDoLists.userLists.length,
+                              itemCount: widget.userNotes.length,
                               itemBuilder: (context, index) {
-                                final list = toDoLists.userLists[index];
+                                final note = widget.userNotes[index];
                                 return GestureDetector(
                                   onSecondaryTap: () {
-                                    debugPrint(
-                                      '${list.name} was right clicked',
-                                    );
+                                    debugPrint('$note was right clicked');
                                   },
                                   child: ListTile(
-                                    title: Text(list.name),
-                                    onTap: () => widget.onChangeSelected(list),
+                                    title: Text(note),
+                                    onTap: () => widget.onChangeSelected(note),
                                   ),
                                 );
                               },
@@ -201,6 +92,7 @@ class _SidebarState extends State<Sidebar> {
                                 iconSize: 40,
                                 onPressed: () {
                                   debugPrint('Task page view button Clicked');
+                                  Navigator.pop(context);
                                 },
                               ),
                               IconButton(
@@ -216,12 +108,6 @@ class _SidebarState extends State<Sidebar> {
                                 onPressed: () {
                                   debugPrint(
                                     'Notepad page view button Clicked',
-                                  );
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => NotePadPage(),
-                                    ),
                                   );
                                 },
                               ),
@@ -264,7 +150,7 @@ class _SidebarState extends State<Sidebar> {
                                     child: IconButton(
                                       onPressed: () {
                                         debugPrint('Settings button Pressed');
-                                        widget.onOpenSettingsPanel();
+                                        // widget.onOpenSettingsPanel();
                                       },
                                       icon: Icon(Icons.settings),
                                     ),
