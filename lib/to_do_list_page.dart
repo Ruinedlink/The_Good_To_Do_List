@@ -69,7 +69,7 @@ class _ToDoListBodyState extends State<ToDoListBody> {
     sidebarShown = true;
   }
 
-  void _openSettingsPanel() {
+  void _openSettingsPanel(BuildContext context) {
     showSettingsPanelDialoug(context);
   }
 
@@ -154,7 +154,7 @@ class _ToDoListBodyState extends State<ToDoListBody> {
           onSelectedViewChanged: onChangeSelectedView,
           sidebarShown: sidebarShown,
           onOpenSettingsPanel: () => {
-            showSettingsPanelDialoug(context),
+            _openSettingsPanel(context),
             debugPrint('Show settings pannel'),
           },
         ),
