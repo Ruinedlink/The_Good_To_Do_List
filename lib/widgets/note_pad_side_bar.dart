@@ -19,6 +19,12 @@ class _NotePadSideBarState extends State<NotePadSideBar> {
   final ExpansibleController _expansionTileController = ExpansibleController();
 
   @override
+  void initState() {
+    super.initState();
+    _expansionTileController.expand();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return widget.sidebarShown == false
         ? SizedBox.shrink()
@@ -28,6 +34,7 @@ class _NotePadSideBarState extends State<NotePadSideBar> {
             child: Container(
               padding: EdgeInsetsGeometry.all(10),
               child: Material(
+                clipBehavior: Clip.antiAlias,
                 borderRadius: BorderRadius.circular(10),
                 color: Color.fromARGB(25, 0, 0, 0),
                 child: Column(
@@ -35,7 +42,6 @@ class _NotePadSideBarState extends State<NotePadSideBar> {
                     Expanded(
                       child: ExpansionTile(
                         controller: _expansionTileController,
-                        initiallyExpanded: true,
                         controlAffinity: .leading,
                         title: Text('Notes'),
                         leading: Icon(
