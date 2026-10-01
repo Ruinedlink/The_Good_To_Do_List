@@ -105,8 +105,8 @@ class _ToDoListBodyState extends State<ToDoListBody> {
     setState(() {
       task.setParentId(selectedList.id!);
 
-      toDoLists.idToList(task.parentId!)!.addChildTask(task);
-      toDoLists.idToList(task.parentId!)!.saveToFile();
+      toDoLists.getParentList(task.parentId!)!.addChildTask(task);
+      toDoLists.getParentList(task.parentId!)!.saveToFile();
     });
   }
 
@@ -128,7 +128,7 @@ class _ToDoListBodyState extends State<ToDoListBody> {
       debugPrint("new task ${task.text}");
       // debugPrint({selectedTask == task}.toString());
       selectedTask = task;
-      toDoLists.idToList(task.parentId!)!.saveToFile();
+      toDoLists.getParentList(task.parentId!)!.saveToFile();
     });
   }
 

@@ -73,7 +73,7 @@ class _TaskView extends State<TaskView> {
       if (selectedTask == task) {
         widget.onSelectedItemChanged(null);
       }
-      ToDoList? parentList = widget.allLists.idToList(task.parentId!);
+      ToDoList? parentList = widget.allLists.getParentList(task.parentId!);
       if (parentList != null) {
         var taskParent = parentList.findTaskById(task.parentId!);
         parentList.removeTaskById(task.id);

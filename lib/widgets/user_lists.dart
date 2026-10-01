@@ -1,4 +1,5 @@
 import 'package:todo_model/todo_model.dart';
+import 'package:flutter/material.dart' show debugPrint;
 
 enum ViewSortMethod {
   all('All'),
@@ -81,7 +82,18 @@ class ToDoLists {
     return finalMap;
   }
 
-  ToDoList? idToList(String id) {
-    return _idToListMap[id];
+  ToDoList? getParentList(String id) {
+    if (_idToListMap[id] == null) {
+      for (ToDoList list in lists) {
+        if (list.findTaskById(id) != null) {
+          return list;
+        }
+      }
+      // if for loop fails return error
+      debugPrint('Did not find task id in any lists, id does not exist');
+      return null;
+    } else {
+      return _idToListMap[id];
+    }
   }
 }
